@@ -12,9 +12,4 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: compile and release
-        uses: rust-build/rust-build.action@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        with:
-          RUSTTARGET: "x86_64-pc-windows-gnu"
-          SRC_DIR: "./installer"
+        run: cd installer && cargo build --release --locked
