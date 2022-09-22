@@ -43,8 +43,10 @@ function setup_airboss(unit)
     local MissionStart = timer.getTime0()
     local MissionEnd = MissionStart + jtfutils.HHMM2sec(MissionLength)
 
+    local isBlue = unit:GetCoalition() == coalition.side.BLUE
+    local isCarrier = jtfutils.list_contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'CVN_75', 'LHA_Tarawa'}, unit:GetTypeName())
 
-    if (unit:IsShip() and unit:GetCoalition() == coalition.side.BLUE and jtfutils.list_contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'CVN_75', 'LHA_Tarawa'}, unit:GetTypeName())) then
+    if (unit:IsActive() and  unit:IsShip() and isBlue and isCarrier) then
 
         -- create airboss instance
         boss = AIRBOSS:New(unit:GetCallsign(), morse[unit:GetTypeName()])
