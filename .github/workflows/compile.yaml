@@ -19,5 +19,5 @@ jobs:
     - name: Configure
       run: rustup target add x86_64-pc-windows-gnu
     - name: Compile
-      run: cd installer && cargo build --verbose --target x86_64-pc-windows-gnu
+      run: cd installer && cargo build --target x86_64-pc-windows-gnu
 
