@@ -10,9 +10,8 @@ jobs:
     name: windows release
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
-        with:
-          rust-version: nightly
       - uses: actions/checkout@master
+      - name: update version
+        run: rustup install stable
       - name: compile and release
         run: cd installer && cargo build --release --locked
