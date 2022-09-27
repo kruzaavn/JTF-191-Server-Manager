@@ -1,4 +1,4 @@
-name: Release
+name: Build and Upload Release
 
 on:
   release:
@@ -11,16 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@master
-      - name: update rust version
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          default: true
-      - name: compile and release
-        uses: rust-build/rust-build.action@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: x86_64-pc-windows-gnu
-          SRC_DIR: './installer'
+        uses: actions/checkout@v3
+      - name: Configure
+        run: rustup target add x86_64-pc-windows-gnu
+      - name: Compile
+        run: cd installer && cargo build -- target x86_64-pc-windows-gnu
