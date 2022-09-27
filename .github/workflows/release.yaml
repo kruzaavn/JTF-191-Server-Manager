@@ -15,4 +15,8 @@ jobs:
       - name: update rust version
         run: rustup install stable
       - name: compile and release
-        run: cd installer && cargo build --release --locked
+        uses: rust-build/rust-build.action@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          RUSTTARGET: x86_64-pc-windows-gnu
