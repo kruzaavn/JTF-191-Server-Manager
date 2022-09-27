@@ -1,5 +1,5 @@
 [package]
-name = "installer"
+name = "jtf191_server_manager_installer"
 version = "0.1.0"
 edition = "2021"
 

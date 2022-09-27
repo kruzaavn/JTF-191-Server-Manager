@@ -19,4 +19,12 @@ jobs:
           default: true
           override: true
       - name: Compile
-        run: cd installer && cargo build
+        run: cd installer && cargo build --workspace --release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            target/release/jtf191_server_manager_installer.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
