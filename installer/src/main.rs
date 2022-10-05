@@ -1,6 +1,7 @@
 use eframe::egui;
-use std::path::Path;
 use egui_extras::RetainedImage;
+use dirs::home_dir;
+use std::path::PathBuf;
 
 static SPACING: f32 = 20.0;
 
@@ -18,8 +19,30 @@ fn main() {
     );
 }
 
-fn get_default_path() -> Option<String> {
-    return None
+fn get_default_path(install: bool) -> Option<String> {
+
+    let full_path: PathBuf;
+
+    if install {
+
+        full_path = PathBuf::new().join(r"C:\Program Files\Eagle Dynamics\DCS.openbeta");
+
+    } else {
+
+        full_path = home_dir()?.join("Saved Games/DCS.openbeta");
+
+    }
+
+    return if full_path.exists() {
+
+        Some(full_path.to_str()?.to_string())
+
+    } else {
+
+        None
+
+    }
+
 }
 
 struct MyApp {
@@ -32,8 +55,8 @@ struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            install_path: get_default_path(),
-            saved_games_path: get_default_path(),
+            install_path: get_default_path(true),
+            saved_games_path: get_default_path(false),
             image: RetainedImage::from_image_bytes(
                 "JTF191d.png",
                 include_bytes!("JTF191d.png"),
@@ -49,7 +72,6 @@ impl Default for MyApp {
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
-
 
             self.image.show_scaled(ui, 0.1);
 
