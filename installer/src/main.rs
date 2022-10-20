@@ -2,6 +2,9 @@ use eframe::egui;
 use egui_extras::RetainedImage;
 use dirs::home_dir;
 use std::path::PathBuf;
+use std::path::Path;
+use reqwest;
+
 
 static SPACING: f32 = 20.0;
 
@@ -25,7 +28,7 @@ fn get_default_path(install: bool) -> Option<String> {
 
     if install {
 
-        full_path = PathBuf::new().join(r"C:\Program Files\Eagle Dynamics\DCS.openbeta");
+        full_path = Path::new(r"C:\Program Files\Eagle Dynamics\DCS.openbeta").to_path_buf();
 
     } else {
 
@@ -49,7 +52,6 @@ struct MyApp {
     install_path: Option<String>,
     saved_games_path: Option<String>,
     image: RetainedImage,
-    moose: bool
 }
 
 impl Default for MyApp {
@@ -62,7 +64,7 @@ impl Default for MyApp {
                 include_bytes!("JTF191d.png"),
             )
             .unwrap(),
-            moose: true
+
         }
     }
 }
@@ -116,10 +118,6 @@ impl eframe::App for MyApp {
 
             ui.add_space(SPACING);
 
-            ui.checkbox(&mut self.moose, "Moose");
-
-            ui.add_space(SPACING);
-
             ui.separator();
 
             let install_button = ui.add_enabled(self.install_path.is_some()  && self.saved_games_path.is_some(), egui::Button::new("Install"));
@@ -128,7 +126,17 @@ impl eframe::App for MyApp {
             if install_button.clicked() {
 
                 if self.install_path.is_some()  && self.saved_games_path.is_some() {
-                    println!("I've been clicked! ")
+
+                    let package_url = "https://api.github.com/repos/kruzaavn/JTF-191-Server-Manager/releases/latest";
+                    let moose_url = "https://github.com/FlightControl-Master/MOOSE/releases/latest";
+
+
+                    let response = reqwest::blocking::get("https://kruzaavn.github.io/data/minecraft/ops.json").unwrap();
+
+                    let json = response.json().unwrap();
+
+                    println!("{}", json)
+
                 }
             }
         });

@@ -11,4 +11,5 @@ egui_extras = { version = "*", features = ["image"] }
 image = { version = "*", default-features = false, features = ["png"] }
 rfd = "*"
 dirs = "*"
-reqwest = "*"
+reqwest = {version = "*", features=["blocking", "json"]}
+serde = "*"
