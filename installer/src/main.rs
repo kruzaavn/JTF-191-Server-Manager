@@ -3,8 +3,12 @@ use egui_extras::RetainedImage;
 use dirs::home_dir;
 use std::path::PathBuf;
 use std::path::Path;
+use reqwest::blocking::{Client};
 use reqwest;
 use serde::Deserialize;
+use std::io;
+use std::fs::File;
+use serde_json::{Result, Value};
 
 
 static SPACING: f32 = 20.0;
@@ -49,17 +53,36 @@ fn get_default_path(install: bool) -> Option<String> {
 
 }
 
+fn get_client() -> Client {
+
+    let mut headers = reqwest::header::HeaderMap::new();
+    headers.insert("User-Agent", reqwest::header::HeaderValue::from_static("kruzaavn"));
+
+
+    let client = Client::builder().default_headers(headers).build().expect("Unable to create client");
+
+
+
+    return client
+
+}
+
+fn get_json(client: &Client, url: &str) -> Value {
+        let json_string = client.get(url).send().expect("request failed").text().expect("no message text");
+
+        let json: Value = serde_json::from_str(&json_string).unwrap();
+
+        return json
+
+    }
+
 struct MyApp {
     install_path: Option<String>,
     saved_games_path: Option<String>,
     image: RetainedImage,
+    client: Client
 }
 
-#[derive(Deserialize)]
-struct OpsJSON {
-    uuid: String,
-    name: String
-}
 
 impl Default for MyApp {
     fn default() -> Self {
@@ -71,7 +94,7 @@ impl Default for MyApp {
                 include_bytes!("JTF191d.png"),
             )
             .unwrap(),
-
+            client: get_client()
         }
     }
 }
@@ -127,7 +150,7 @@ impl eframe::App for MyApp {
 
             ui.separator();
 
-            let install_button = ui.add_enabled(self.install_path.is_some()  && self.saved_games_path.is_some(), egui::Button::new("Install"));
+            let install_button = ui.add_enabled(self.install_path.is_some()  && self.saved_games_path.is_some(), egui::Button::new("Install Package"));
 
 
             if install_button.clicked() {
@@ -135,17 +158,23 @@ impl eframe::App for MyApp {
                 if self.install_path.is_some()  && self.saved_games_path.is_some() {
 
                     let package_url = "https://api.github.com/repos/kruzaavn/JTF-191-Server-Manager/releases/latest";
-                    let moose_url = "https://github.com/FlightControl-Master/MOOSE/releases/latest";
+                    let moose_url = "https://api.github.com/repos/FlightControl-Master/MOOSE/releases/latest";
+                    let test_url = "https://kruzaavn.github.io/data/minecraft/ops.json";
 
+                    let json = get_json(&self.client, package_url);
 
-                    let response = reqwest::blocking::get("https://kruzaavn.github.io/data/minecraft/ops.json").unwrap();
+                    println!("{}", json["url"]);
 
-                    let json: OpsJSON = response.json().unwrap();
-
-                    println!("{} , {}", json.uuid, json.name)
+                    // let resp = reqwest::blocking::get("https://github.com/kruzaavn/JTF-191-Server-Manager/archive/refs/tags/v0.7.zip").expect("request failed");
+                    // let body = resp.text().expect("body invalid");
+                    // let mut out = File::create("file_downloaded.lua").expect("failed to create file");
+                    // io::copy(&mut body.as_bytes(), &mut out).expect("failed to copy content");
 
                 }
             }
         });
     }
+
+
 }
+
