@@ -12,4 +12,4 @@ image = { version = "*", default-features = false, features = ["png"] }
 rfd = "*"
 dirs = "*"
 reqwest = {version = "*", features=["blocking", "json"]}
-serde = "*"
+serde = { version = "*", features = ["derive"] }

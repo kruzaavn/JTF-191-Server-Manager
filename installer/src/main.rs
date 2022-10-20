@@ -4,6 +4,7 @@ use dirs::home_dir;
 use std::path::PathBuf;
 use std::path::Path;
 use reqwest;
+use serde::Deserialize;
 
 
 static SPACING: f32 = 20.0;
@@ -52,6 +53,12 @@ struct MyApp {
     install_path: Option<String>,
     saved_games_path: Option<String>,
     image: RetainedImage,
+}
+
+#[derive(Deserialize)]
+struct OpsJSON {
+    uuid: String,
+    name: String
 }
 
 impl Default for MyApp {
@@ -133,9 +140,9 @@ impl eframe::App for MyApp {
 
                     let response = reqwest::blocking::get("https://kruzaavn.github.io/data/minecraft/ops.json").unwrap();
 
-                    let json = response.json().unwrap();
+                    let json: OpsJSON = response.json().unwrap();
 
-                    println!("{}", json)
+                    println!("{} , {}", json.uuid, json.name)
 
                 }
             }
