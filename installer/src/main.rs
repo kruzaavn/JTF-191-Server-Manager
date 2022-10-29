@@ -8,7 +8,7 @@ use reqwest;
 use serde::Deserialize;
 use std::io;
 use std::fs::File;
-use serde_json::{Result, Value};
+use serde_json::Value;
 
 
 static SPACING: f32 = 20.0;
@@ -159,7 +159,6 @@ impl eframe::App for MyApp {
 
                     let package_url = "https://api.github.com/repos/kruzaavn/JTF-191-Server-Manager/releases/latest";
                     let moose_url = "https://api.github.com/repos/FlightControl-Master/MOOSE/releases/latest";
-                    let test_url = "https://kruzaavn.github.io/data/minecraft/ops.json";
 
                     let json = get_json(&self.client, package_url);
 
